@@ -16,6 +16,24 @@ services:
       - "9000:9000"                                           # To change the externally exposed port, change to: $custom_port:9000
     networks:
       - listmonk
+      - coolify
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=coolify
+      - traefik.http.services.edixai-listmonk-svc.loadbalancer.server.port=9000
+      - traefik.http.routers.edixai-listmonk-https.rule=Host(`send.edixai.com`)
+      - traefik.http.routers.edixai-listmonk-https.entrypoints=https
+      - traefik.http.routers.edixai-listmonk-https.priority=1000
+      - traefik.http.routers.edixai-listmonk-https.tls=true
+      - traefik.http.routers.edixai-listmonk-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.edixai-listmonk-https.service=edixai-listmonk-svc
+      - traefik.http.routers.edixai-listmonk-http.rule=Host(`send.edixai.com`)
+      - traefik.http.routers.edixai-listmonk-http.entrypoints=http
+      - traefik.http.routers.edixai-listmonk-http.priority=1000
+      - traefik.http.routers.edixai-listmonk-http.middlewares=edixai-listmonk-force-https
+      - traefik.http.routers.edixai-listmonk-http.service=edixai-listmonk-svc
+      - traefik.http.middlewares.edixai-listmonk-force-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.edixai-listmonk-force-https.redirectscheme.permanent=true
     hostname: listmonk.example.com                            # Recommend using FQDN for hostname
     depends_on:
       - db
@@ -65,6 +83,8 @@ services:
 
 networks:
   listmonk:
+  coolify:
+    external: true
 
 volumes:
   listmonk-data:
