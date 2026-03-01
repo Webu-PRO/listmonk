@@ -34,7 +34,7 @@ services:
       - traefik.http.routers.edixai-listmonk-http.service=edixai-listmonk-svc
       - traefik.http.middlewares.edixai-listmonk-force-https.redirectscheme.scheme=https
       - traefik.http.middlewares.edixai-listmonk-force-https.redirectscheme.permanent=true
-    hostname: listmonk.example.com                            # Recommend using FQDN for hostname
+    hostname: send.edixai.com                                 # FQDN used for reverse proxy routing
     depends_on:
       - db
     command: [sh, -c, "./listmonk --install --idempotent --yes --config '' && ./listmonk --upgrade --yes --config '' && ./listmonk --config ''"]
